@@ -1,20 +1,68 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{title}}!
-  </h1>
-  <img width="300" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
 
+<h1>Custom Queue Algorithm</h1>
+
+<button class="btn btn-xs btn-primary" (click)="AddJob()"><i class="fa fa-plus"></i> Add Jobs</button>
+<button class="btn btn-xs btn-primary" (click)="StartProcessingJobs()"><i class="fa fa-arrow-right"></i> Process Jobs</button>
+
+<h2>Original Job Queue</h2>
+<span>Job Length: {{jobs.length}}</span>
+<div *ngIf="jobs.length > 0" class="well well-sm">
+    <div *ngFor="let job of jobs">
+        <span>Job Id: {{job.id}}, Type: {{job.type}}</span>
+        <span *ngFor="let batch of job.batches">
+            [{{batch.id}},{{batch.duration}}]&nbsp;
+        </span>
+    </div>
+</div>
+
+<h2>Job Queue</h2>
+<div *ngIf="jobs.length > 0" class="well well-sm">
+    <div *ngFor="let job of jobs">
+        <span>Job Id: {{job.id}}, Type: {{job.type}}</span>
+        <span *ngFor="let batch of job.batches">
+            <span *ngIf="batch.startTime==null">
+            [{{batch.id}},{{batch.duration}}]&nbsp;
+        </span>
+        </span>
+    </div>
+</div>
+
+<div class="row">
+    <div *ngFor="let server of servers" class="col-md-1 bordereddiv">
+        <h4><span class="label label-warning">Server - {{server.id}}</span></h4>
+        <div *ngFor="let bat of server.processing">
+            <p *ngIf="bat.status==true && bat.jobid%2==0" class="bg-success text-white peven">
+                <i class="fa fa-check"></i> {{bat.jobid}} - [{{bat.id}},{{bat.duration}}]
+            </p>
+            <p *ngIf="bat.status==true && bat.jobid%2==1" class="bg-success text-white podd">
+                <i class="fa fa-check"></i>{{bat.jobid}} - [{{bat.id}},{{bat.duration}}]
+            </p>
+
+            <p *ngIf="bat.status==false && bat.jobid%2==0" class="bg-primary text-white peven">
+                {{bat.jobid}} - [{{bat.id}},{{bat.duration}}] </p>
+            <p *ngIf="bat.status==false && bat.jobid%2==1" class="bg-danger text-white podd">
+                {{bat.jobid}} - [{{bat.id}},{{bat.duration}}]</p>
+
+        </div>
+    </div>
+</div>
+
+<h3>Actual Order</h3>
+<div class="row">
+    <div class="col-md-1" *ngFor="let bat of orderedlist">
+        <!-- <p class="bg-info">{{bat.jobid}} - [{{bat.id}},{{bat.duration}}] - {{bat.server}}</p> -->
+        <p *ngIf="bat.status==true && bat.jobid%2==0" class="bg-success text-white peven">
+            <i class="fa fa-check"></i> {{bat.jobid}} - [{{bat.id}},{{bat.duration}}] - {{bat.server}}
+        </p>
+        <p *ngIf="bat.status==true && bat.jobid%2==1" class="bg-success text-white podd">
+            <i class="fa fa-check"></i>{{bat.jobid}} - [{{bat.id}},{{bat.duration}}] - {{bat.server}}
+        </p>
+
+        <p *ngIf="bat.status==false && bat.jobid%2==0" class="bg-primary text-white peven">
+            {{bat.jobid}} - [{{bat.id}},{{bat.duration}}] - {{bat.server}}
+        </p>
+        <p *ngIf="bat.status==false && bat.jobid%2==1" class="bg-danger text-white podd">
+            {{bat.jobid}} - [{{bat.id}},{{bat.duration}}] - {{bat.server}}
+        </p>
+    </div>
+</div>
